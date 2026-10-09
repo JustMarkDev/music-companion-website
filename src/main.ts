@@ -3,6 +3,7 @@ import heroImg from "./assets/hero.png";
 import typescriptLogo from "./assets/typescript.svg";
 import viteLogo from "./assets/vite.svg";
 import { setupCounter } from "./counter.ts";
+import { injectSpeedInsights } from "@vercel/speed-insights";
 
 document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 <section id="center">
@@ -56,5 +57,8 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 <div class="ticks"></div>
 <section id="spacer"></section>
 `;
+
+// Initialize Vercel Speed Insights
+injectSpeedInsights();
 
 setupCounter(document.querySelector<HTMLButtonElement>("#counter")!);
