@@ -83,7 +83,6 @@ button {
   background: var(--surface);
   /* The app gets this from Acrylic or Liquid Glass; a browser can only approximate it. */
   backdrop-filter: blur(var(--backdrop-blur));
-  -webkit-backdrop-filter: blur(var(--backdrop-blur));
   -webkit-user-select: none;
   user-select: none;
   transition: box-shadow 200ms ease;
@@ -94,7 +93,6 @@ button {
 .overlay.mica {
   background: linear-gradient(var(--surface), var(--surface)), hsla(220, 14%, 16%, 0.3);
   backdrop-filter: blur(calc(var(--backdrop-blur) + 16px)) saturate(1.5);
-  -webkit-backdrop-filter: blur(calc(var(--backdrop-blur) + 16px)) saturate(1.5);
 }
 
 .overlay.click-through {
