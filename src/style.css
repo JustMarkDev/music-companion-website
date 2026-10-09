@@ -1,292 +1,456 @@
-:root {
-  --text: #6b6375;
-  --text-h: #08060d;
-  --bg: #fff;
-  --border: #e5e4e7;
-  --code-bg: #f4f3ec;
-  --accent: #aa3bff;
-  --accent-bg: rgba(170, 59, 255, 0.1);
-  --accent-border: rgba(170, 59, 255, 0.5);
-  --social-bg: rgba(244, 243, 236, 0.5);
-  --shadow: rgba(0, 0, 0, 0.1) 0 10px 15px -3px, rgba(0, 0, 0, 0.05) 0 4px 6px -2px;
+/* Page layout. The components (keys, cards, wells) come from app.css.
+   Radii: keys 12px, cards and wells 16px, the demo stage 24px, pills fully round. */
 
-  --sans: system-ui, "Segoe UI", Roboto, sans-serif;
-  --heading: system-ui, "Segoe UI", Roboto, sans-serif;
-  --mono: ui-monospace, Consolas, monospace;
-
-  font: 18px/145% var(--sans);
-  letter-spacing: 0.18px;
-  color-scheme: light dark;
-  color: var(--text);
-  background: var(--bg);
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-
-  @media (max-width: 1024px) {
-    font-size: 16px;
-  }
+* {
+  box-sizing: border-box;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --text: #9ca3af;
-    --text-h: #f3f4f6;
-    --bg: #16171d;
-    --border: #2e303a;
-    --code-bg: #1f2028;
-    --accent: #c084fc;
-    --accent-bg: rgba(192, 132, 252, 0.15);
-    --accent-border: rgba(192, 132, 252, 0.5);
-    --social-bg: rgba(47, 48, 58, 0.5);
-    --shadow: rgba(0, 0, 0, 0.4) 0 10px 15px -3px, rgba(0, 0, 0, 0.25) 0 4px 6px -2px;
-  }
-
-  #social .button-icon {
-    filter: invert(1) brightness(2);
-  }
+html {
+  background: var(--ui-bg);
 }
 
 body {
   margin: 0;
+  color: var(--ui-text);
+  font-family: var(--ui-font);
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
 }
 
-h1,
-h2 {
-  font-family: var(--heading);
-  font-weight: 500;
-  color: var(--text-h);
+a {
+  color: inherit;
+}
+
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+.nav,
+.hero,
+.players,
+.open-source,
+.footer {
+  width: min(1280px, 100% - 48px);
+  margin-inline: auto;
+}
+
+/* ---------- Nav ---------- */
+
+.nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  height: 72px;
+}
+
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  font-weight: 800;
+  text-decoration: none;
+}
+
+.brand img {
+  border-radius: 8px;
+}
+
+.icon-key {
+  width: 40px;
+  height: 38px;
+}
+
+.icon-key svg {
+  width: 19px;
+  height: 19px;
+}
+
+/* ---------- Hero ---------- */
+
+.hero {
+  padding-top: 40px;
+}
+
+.hero > * {
+  animation: rise 700ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.hero > :nth-child(2) {
+  animation-delay: 60ms;
+}
+
+.hero > :nth-child(3) {
+  animation-delay: 120ms;
+}
+
+.hero > :nth-child(4) {
+  animation-delay: 180ms;
+}
+
+.eyebrow {
+  margin: 0 0 14px;
+  color: var(--accent-ink);
+  font-size: 13px;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  transition: color 300ms ease;
 }
 
 h1 {
-  font-size: 56px;
-  letter-spacing: -1.68px;
-  margin: 32px 0;
-  @media (max-width: 1024px) {
-    font-size: 36px;
-    margin: 20px 0;
-  }
-}
-h2 {
-  font-size: 24px;
-  line-height: 118%;
-  letter-spacing: -0.24px;
-  margin: 0 0 8px;
-  @media (max-width: 1024px) {
-    font-size: 20px;
-  }
-}
-p {
+  max-width: 19ch;
   margin: 0;
+  font-size: clamp(2.5rem, 5.2vw, 4.25rem);
+  font-weight: 800;
+  letter-spacing: -0.025em;
+  line-height: 1.04;
 }
 
-code,
-.counter {
-  font-family: var(--mono);
-  display: inline-flex;
-  border-radius: 4px;
-  color: var(--text-h);
+.lede {
+  max-width: 50ch;
+  margin: 20px 0 0;
+  color: var(--ui-muted);
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1.5;
 }
 
-code {
-  font-size: 15px;
-  line-height: 135%;
-  padding: 4px 8px;
-  background: var(--code-bg);
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 14px;
+  margin-top: 30px;
 }
 
-.counter {
-  font-size: 16px;
-  padding: 5px 10px;
-  border-radius: 5px;
-  color: var(--accent);
-  background: var(--accent-bg);
-  border: 2px solid transparent;
-  transition: border-color 0.3s;
-  margin-bottom: 24px;
-
-  &:hover {
-    border-color: var(--accent-border);
-  }
-  &:focus-visible {
-    outline: 2px solid var(--accent);
-    outline-offset: 2px;
-  }
+.actions .key {
+  height: 48px;
+  padding: 0 22px;
+  font-size: 15.5px;
+  white-space: nowrap;
 }
 
-.hero {
+.key.download {
+  color: var(--on-accent);
+  background: linear-gradient(color-mix(in srgb, var(--accent) 80%, #fff), var(--accent));
+  box-shadow:
+    inset 0 1.5px 0 rgb(255 255 255 / 0.35),
+    0 4px 0 var(--accent-side),
+    0 8px 18px color-mix(in srgb, var(--accent) 28%, transparent);
+}
+
+.key.download:hover {
+  box-shadow:
+    inset 0 1.5px 0 rgb(255 255 255 / 0.4),
+    0 5px 0 var(--accent-side),
+    0 12px 24px color-mix(in srgb, var(--accent) 34%, transparent);
+}
+
+.key.download:active {
+  box-shadow:
+    inset 0 1.5px 0 rgb(255 255 255 / 0.25),
+    0 0 0 var(--accent-side);
+}
+
+.key.download[aria-disabled="true"] {
+  color: var(--ui-muted);
+  background: var(--ui-card);
+  box-shadow: inset 0 0 0 1.5px color-mix(in srgb, var(--ui-text) 10%, transparent);
+  cursor: default;
+  transform: none;
+}
+
+/* ---------- Demo ---------- */
+
+.demo-section {
+  width: min(1360px, 100% - 24px);
+  margin: 56px auto 0;
+  animation: rise 900ms 240ms cubic-bezier(0.16, 1, 0.3, 1) both;
+}
+
+.demo-stage {
   position: relative;
-
-  .base,
-  .framework,
-  .vite {
-    inset-inline: 0;
-    margin: 0 auto;
-  }
-
-  .base {
-    width: 170px;
-    position: relative;
-    z-index: 0;
-  }
-
-  .framework,
-  .vite {
-    position: absolute;
-  }
-
-  .framework {
-    z-index: 1;
-    top: 34px;
-    height: 28px;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(44deg) rotateY(39deg) scale(1.4);
-  }
-
-  .vite {
-    z-index: 0;
-    top: 107px;
-    height: 26px;
-    width: auto;
-    transform: perspective(2000px) rotateZ(300deg) rotateX(40deg) rotateY(39deg) scale(0.8);
-  }
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 48px;
+  height: 680px;
+  padding: 40px 48px;
+  overflow: hidden;
+  background-color: #2a2530;
+  background-position: center;
+  background-size: cover;
+  border-radius: 24px;
+  box-shadow: inset 0 0 0 1px rgb(255 255 255 / 0.06);
 }
 
-#app {
-  width: 1126px;
-  max-width: 100%;
-  margin: 0 auto;
+.demo-stage {
+  color: var(--ui-text);
+}
+
+/* The app's smallest window, 220 × 110, pinned. Zoom enlarges it without changing its
+   layout, so it reads at page scale exactly as it would on a desktop. */
+.demo-stage .overlay {
+  flex: none;
+  width: 220px;
+  height: 110px;
+  zoom: 1.75;
+}
+
+.demo-stage .settings-panel {
+  flex: 0 1 680px;
+  height: 600px;
+}
+
+.demo-caption {
+  margin: 18px 0 0;
+  color: var(--ui-muted);
+  font-size: 14px;
+  font-weight: 600;
   text-align: center;
-  border-inline: 1px solid var(--border);
-  min-height: 100svh;
-  display: flex;
-  flex-direction: column;
-  box-sizing: border-box;
 }
 
-#center {
-  display: flex;
-  flex-direction: column;
-  gap: 25px;
-  place-content: center;
-  place-items: center;
-  flex-grow: 1;
-
-  @media (max-width: 1024px) {
-    padding: 32px 20px 24px;
-    gap: 18px;
-  }
-}
-
-#next-steps {
-  display: flex;
-  border-top: 1px solid var(--border);
-  text-align: left;
-
-  & > div {
-    flex: 1 1 0;
-    padding: 32px;
-    @media (max-width: 1024px) {
-      padding: 24px 20px;
-    }
-  }
-
-  .icon {
-    margin-bottom: 16px;
-    width: 22px;
-    height: 22px;
-  }
-
-  @media (max-width: 1024px) {
+/* Below desktop width the two windows stack. */
+@media (max-width: 1023px) {
+  .demo-stage {
     flex-direction: column;
-    text-align: center;
+    gap: 32px;
+    height: auto;
+    padding: 40px 24px 24px;
+  }
+
+  .demo-stage .overlay {
+    zoom: 1.5;
+  }
+
+  .demo-stage .settings-panel {
+    flex: none;
+    align-self: stretch;
+    height: auto;
   }
 }
 
-#docs {
-  border-right: 1px solid var(--border);
+@media (max-width: 640px) {
+  .demo-stage {
+    padding: 28px 14px 14px;
+    border-radius: 16px;
+  }
 
-  @media (max-width: 1024px) {
-    border-right: none;
-    border-bottom: 1px solid var(--border);
+  .settings-page {
+    padding-inline: 12px;
   }
 }
 
-#next-steps ul {
-  list-style: none;
+/* ---------- Players ---------- */
+
+.players {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 64px;
+  align-items: center;
+  padding-top: 140px;
+}
+
+h2 {
+  margin: 0;
+  font-size: clamp(1.75rem, 3vw, 2.5rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+}
+
+h2 + p {
+  max-width: 48ch;
+  margin: 16px 0 0;
+  color: var(--ui-muted);
+  font-size: 17px;
+  font-weight: 600;
+  line-height: 1.55;
+}
+
+.player-logos {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+  margin: 0;
   padding: 0;
+  list-style: none;
+}
+
+.player-logos li {
+  display: grid;
+  aspect-ratio: 1.5;
+  place-items: center;
+  color: var(--ui-muted);
+  background: var(--ui-well);
+  border-radius: 16px;
+  box-shadow: var(--well-shadow);
+  transition: color 200ms ease;
+}
+
+.player-logos svg {
+  width: 34px;
+  height: 34px;
+  transition: transform 300ms var(--spring);
+}
+
+.player-logos li:hover {
+  color: var(--ui-text);
+}
+
+.player-logos li:hover svg {
+  transform: translateY(-3px) scale(1.08);
+}
+
+/* ---------- Open source ---------- */
+
+.open-source.card {
+  display: grid;
+  grid-template-columns: minmax(0, 1.5fr) minmax(0, 1fr);
+  gap: 48px;
+  align-items: center;
+  margin-block: 140px 0;
+  padding: 48px;
+  border-radius: 24px;
+}
+
+.repo {
   display: flex;
-  gap: 8px;
-  margin: 32px 0 0;
+  align-items: center;
+  gap: 16px;
+  padding: 22px 24px;
+  text-decoration: none;
+  background: var(--ui-well);
+  border-radius: 16px;
+  box-shadow: var(--well-shadow);
+  transition: color 200ms ease;
+}
 
-  .logo {
-    height: 18px;
+.repo svg {
+  width: 40px;
+  height: 40px;
+  flex: none;
+  transition: transform 300ms var(--spring);
+}
+
+.repo:hover svg {
+  transform: rotate(-8deg) scale(1.08);
+}
+
+.repo strong {
+  display: block;
+  font-size: 16px;
+  font-weight: 800;
+  overflow-wrap: anywhere;
+}
+
+.repo small {
+  display: block;
+  margin-top: 3px;
+  color: var(--ui-muted);
+  font-size: 13px;
+  font-weight: 600;
+}
+
+/* ---------- Footer ---------- */
+
+.footer {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 16px 32px;
+  align-items: center;
+  justify-content: space-between;
+  padding: 72px 0 40px;
+  color: var(--ui-muted);
+  font-size: 13.5px;
+  font-weight: 600;
+}
+
+.footer nav {
+  display: flex;
+  gap: 24px;
+}
+
+.footer a {
+  text-decoration-color: color-mix(in srgb, var(--ui-text) 30%, transparent);
+  text-underline-offset: 3px;
+}
+
+.footer nav a {
+  text-decoration: none;
+}
+
+.footer a:hover {
+  color: var(--ui-text);
+}
+
+@media (max-width: 767px) {
+  .hero {
+    padding-top: 16px;
   }
 
-  a {
-    color: var(--text-h);
-    font-size: 16px;
-    border-radius: 6px;
-    background: var(--social-bg);
-    display: flex;
-    padding: 6px 12px;
-    align-items: center;
-    gap: 8px;
-    text-decoration: none;
-    transition: box-shadow 0.3s;
-
-    &:hover {
-      box-shadow: var(--shadow);
-    }
-    .button-icon {
-      height: 18px;
-      width: 18px;
-    }
+  .lede {
+    font-size: 16.5px;
   }
 
-  @media (max-width: 1024px) {
-    margin-top: 20px;
-    flex-wrap: wrap;
-    justify-content: center;
+  .players,
+  .open-source.card {
+    grid-template-columns: minmax(0, 1fr);
+    gap: 32px;
+  }
 
-    li {
-      flex: 1 1 calc(50% - 8px);
-    }
+  .players {
+    padding-top: 96px;
+  }
 
-    a {
-      width: 100%;
-      justify-content: center;
-      box-sizing: border-box;
-    }
+  .open-source.card {
+    margin-top: 96px;
+    padding: 28px 22px;
   }
 }
 
-#spacer {
-  height: 88px;
-  border-top: 1px solid var(--border);
-  @media (max-width: 1024px) {
-    height: 48px;
+/* ---------- Motion ---------- */
+
+@keyframes rise {
+  from {
+    opacity: 0;
+    transform: translateY(18px);
   }
 }
 
-.ticks {
-  position: relative;
-  width: 100%;
+.reveal {
+  opacity: 0;
+  transform: translateY(28px);
+  transition:
+    opacity 700ms ease,
+    transform 900ms cubic-bezier(0.16, 1, 0.3, 1);
+}
 
-  &::before,
-  &::after {
-    content: "";
-    position: absolute;
-    top: -4.5px;
-    border: 5px solid transparent;
+.reveal.revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero > *,
+  .demo-section {
+    animation: none;
   }
 
-  &::before {
-    left: 0;
-    border-left-color: var(--border);
+  .reveal {
+    opacity: 1;
+    transform: none;
+    transition: none;
   }
-  &::after {
-    right: 0;
-    border-right-color: var(--border);
+
+  .player-logos svg,
+  .repo svg {
+    transition: none;
   }
 }
