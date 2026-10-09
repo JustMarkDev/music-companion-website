@@ -40,7 +40,7 @@ jobs:
           ~/.opencode/bin/opencode run --standalone --auto
           --model 'opencode-go/muse-spark-1.3-contributor#xhigh'
           --agent review
-          'Review this pull request. Follow .github/opencode-review.md exactly: verify and resolve earlier findings, find new problems, post them as one inline GitHub review, then reply with the summary.'
+          'Review this pull request. Follow .github/opencode-review.md exactly: verify and resolve earlier findings, find new problems, post them as one inline GitHub review. There is no harness: you must post the `## Review ·` summary yourself with `gh api repos/{owner}/{repo}/issues/{number}/comments -f body=...` using the exact shape from the Final message section, then stop.'
 
       # Keep one clean summary: drop the action's run-link footer, collapse older summaries.
       - name: Tidy summaries
