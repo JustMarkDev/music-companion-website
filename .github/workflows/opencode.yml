@@ -30,14 +30,14 @@ jobs:
           persist-credentials: false
 
       - name: Install OpenCode v2
-        run: curl -fsSL https://opencode.ai/v2/install | bash
+        run: npm install --global @opencode/cli
 
       - name: Review PR
         env:
           OPENCODE_API_KEY: ${{ secrets.OPENCODE_API_KEY }}
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: >-
-          ~/.opencode/bin/opencode run --standalone --auto
+          opencode run --standalone --auto
           --model 'opencode-go/muse-spark-1.3-contributor#xhigh'
           --agent review
           'Review this pull request. Follow .github/opencode-review.md exactly: verify and resolve earlier findings, find new problems, post them as one inline GitHub review. There is no harness: you must post the `## Review ·` summary yourself with `gh api repos/{owner}/{repo}/issues/{number}/comments -f body=...` using the exact shape from the Final message section, then stop.'
