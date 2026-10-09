@@ -9,6 +9,9 @@
     "preview": "vp preview",
     "prepare": "vp config"
   },
+  "dependencies": {
+    "@vercel/analytics": "^2.0.1"
+  },
   "devDependencies": {
     "typescript": "~6.0.2",
     "vite": "npm:@voidzero-dev/vite-plus-core@1.1.0",
