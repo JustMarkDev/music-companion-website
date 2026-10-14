@@ -26,7 +26,7 @@ type OS = "windows" | "macos" | "linux";
 // Flip `ready` once a platform ships; the button then links straight to its file.
 const DOWNLOADS: Record<OS, { name: string; asset: RegExp; ready: boolean }> = {
   windows: { name: "Windows", asset: /_x64-setup\.exe$/, ready: true },
-  macos: { name: "macOS", asset: /\.dmg$/, ready: false },
+  macos: { name: "macOS", asset: /\.dmg$/, ready: true },
   linux: { name: "Linux", asset: /\.AppImage$/, ready: false },
 };
 
