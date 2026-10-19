@@ -89,23 +89,29 @@ export function mountDemo(host: HTMLElement) {
   applySettings();
   renderLyrics();
 
-  new IntersectionObserver(([entry]) => {
-    onScreen = entry.isIntersecting;
-  }).observe(host);
-
+  // The loop only runs while the demo is on screen, so the rest of the page costs nothing.
   let last = performance.now();
+  let running = false;
   const frame = (now: number) => {
     // A hidden tab pauses requestAnimationFrame, so cap the jump when it resumes.
     const delta = Math.min(0.1, (now - last) / 1000);
     last = now;
-    if (playing && onScreen) {
+    if (playing) {
       time += delta;
       if (time >= tracks[trackIndex].duration) skip(1, false);
     }
     tick();
-    requestAnimationFrame(frame);
+    if (onScreen) requestAnimationFrame(frame);
+    else running = false;
   };
-  requestAnimationFrame(frame);
+  new IntersectionObserver(([entry]) => {
+    onScreen = entry.isIntersecting;
+    if (onScreen && !running) {
+      running = true;
+      last = performance.now();
+      requestAnimationFrame(frame);
+    }
+  }).observe(host);
 }
 
 export function setAppVersion(version: string) {

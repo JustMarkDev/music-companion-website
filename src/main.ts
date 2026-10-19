@@ -2,8 +2,6 @@ import "@fontsource-variable/nunito";
 import "@fontsource-variable/source-sans-3";
 import "./app.css";
 import "./style.css";
-import { inject } from "@vercel/analytics";
-import { injectSpeedInsights } from "@vercel/speed-insights";
 import {
   siApplemusic,
   siSoundcloud,
@@ -119,20 +117,28 @@ document.querySelector<HTMLDivElement>("#app")!.innerHTML = `
 mountDemo(document.querySelector<HTMLElement>("#demo")!);
 
 // Until the API answers (or if it is rate limited) the button opens the release page.
-void fetch(RELEASE_API)
-  .then((response) => (response.ok ? response.json() : Promise.reject(response.status)))
-  .then(
-    (release: { tag_name: string; assets: { name: string; browser_download_url: string }[] }) => {
-      setAppVersion(release.tag_name.replace(/^v/, ""));
-      const asset = release.assets.find((file) => download.asset.test(file.name));
-      if (!download.ready || !asset) return;
-      document.querySelectorAll<HTMLAnchorElement>("[data-download]").forEach((link) => {
-        link.href = asset.browser_download_url;
-        link.title = `${asset.name}`;
-      });
-    },
-  )
-  .catch(() => {});
+// Idle-time fetch, cached for the session so reloads and the 60/hour anonymous limit are free.
+type Release = { tag_name: string; assets: { name: string; browser_download_url: string }[] };
+
+function applyRelease(release: Release) {
+  setAppVersion(release.tag_name.replace(/^v/, ""));
+  const asset = release.assets.find((file) => download.asset.test(file.name));
+  if (!download.ready || !asset) return;
+  document.querySelectorAll<HTMLAnchorElement>("[data-download]").forEach((link) => {
+    link.href = asset.browser_download_url;
+    link.title = `${asset.name}`;
+  });
+}
+
+async function loadRelease() {
+  const cached = sessionStorage.getItem(RELEASE_API);
+  if (cached) return applyRelease(JSON.parse(cached));
+  const response = await fetch(RELEASE_API);
+  if (!response.ok) return;
+  const release: Release = await response.json();
+  sessionStorage.setItem(RELEASE_API, JSON.stringify(release));
+  applyRelease(release);
+}
 
 const revealer = new IntersectionObserver(
   (entries) =>
@@ -145,5 +151,10 @@ const revealer = new IntersectionObserver(
 );
 document.querySelectorAll(".reveal").forEach((section) => revealer.observe(section));
 
-inject();
-injectSpeedInsights();
+// Nothing here is needed to paint, so it waits for the browser to be idle.
+const idle = window.requestIdleCallback ?? ((callback: () => void) => setTimeout(callback, 1));
+idle(() => {
+  loadRelease().catch(() => {});
+  void import("@vercel/analytics").then((m) => m.inject());
+  void import("@vercel/speed-insights").then((m) => m.injectSpeedInsights());
+});
