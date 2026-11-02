@@ -5,7 +5,8 @@
   "type": "module",
   "scripts": {
     "dev": "vp dev",
-    "check": "vp check",
+    "check": "vp check && bun run typecheck",
+    "typecheck": "bun check --no-script",
     "build": "tsc && vp build",
     "preview": "vp preview",
     "prepare": "vp config"
@@ -28,7 +29,7 @@
   "devEngines": {
     "packageManager": {
       "name": "bun",
-      "version": "1.4.2",
+      "version": "1.4.4",
       "onFail": "download"
     }
   }
