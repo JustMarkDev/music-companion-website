@@ -56,7 +56,7 @@ const tracks = playlist(lang);
 const hotkeys = { ...DEFAULT_HOTKEYS[platform] };
 
 const settings = {
-  opacity: 0,
+  opacity: 0.34,
   blurIntensity: 100,
   fontSize: 1,
   lineSpacing: 0.5,
@@ -267,7 +267,7 @@ function hotkeyCard(action: HotkeyAction) {
       <span class="hotkey-label"><strong>${label}</strong>${hint ? `<small>${hint}</small>` : ""}</span>
       <span class="hotkey-value">
         <button type="button" class="hotkey-reset" data-hotkey-reset="${action}" title="${t.resetHotkey}" aria-label="${t.resetHotkey}" hidden>${icons.arrowPath}</button>
-        <button type="button" class="hotkey-input" data-hotkey="${action}" aria-label="${t.recordHotkey(label)}">${keycaps(hotkeys[action])}</button>
+        <button type="button" class="hotkey-input" data-hotkey="${action}" aria-label="${hotkeyLabel(action)}">${keycaps(hotkeys[action])}</button>
       </span>
     </div>`;
 }
@@ -276,6 +276,11 @@ function keycaps(accelerator: string) {
   return acceleratorKeys(accelerator, platform)
     .map((key) => `<kbd>${escapeHtml(key)}</kbd>`)
     .join("");
+}
+
+/** The visible keycaps already say the combo; the label repeats it for screen readers. */
+function hotkeyLabel(action: HotkeyAction) {
+  return `${t.recordHotkey(t.hotkeys[action][0])}: ${acceleratorKeys(hotkeys[action], platform).join(" + ")}`;
 }
 
 /* ---------- Settings ---------- */
@@ -376,42 +381,81 @@ function bindSettings() {
 function bindHotkeys() {
   document.querySelectorAll<HTMLButtonElement>("[data-hotkey]").forEach((input) => {
     const action = input.dataset.hotkey as HotkeyAction;
+    const resetButton = $(`[data-hotkey-reset="${action}"]`);
     let pending: string | null = null;
-    const save = () => {
-      if (pending) hotkeys[action] = pending;
-      pending = null;
-      input.classList.remove("recording");
+    let recording = false;
+
+    const render = () => {
       input.innerHTML = keycaps(hotkeys[action]);
-      $(`[data-hotkey-reset="${action}"]`).hidden =
-        hotkeys[action] === DEFAULT_HOTKEYS[platform][action];
+      input.setAttribute("aria-label", hotkeyLabel(action));
+      resetButton.hidden = hotkeys[action] === DEFAULT_HOTKEYS[platform][action];
     };
-    input.addEventListener("focus", () => {
+
+    const start = () => {
+      if (recording) return;
+      recording = true;
       pending = null;
       input.classList.add("recording");
       input.textContent = t.pressKeys;
-    });
+      input.setAttribute("aria-label", t.pressKeys);
+      input.focus();
+    };
+
+    const stop = (commit: boolean) => {
+      if (!recording) return;
+      recording = false;
+      if (commit && pending) hotkeys[action] = pending;
+      pending = null;
+      input.classList.remove("recording");
+      render();
+    };
+
+    input.addEventListener("click", start);
     input.addEventListener("keydown", (event) => {
+      if (!recording) {
+        if (event.key === "Enter" || event.key === " ") {
+          event.preventDefault();
+          event.stopPropagation();
+          start();
+        }
+        return;
+      }
+      // Tab is how the keyboard leaves; it must never become the shortcut.
+      if (event.key === "Tab") {
+        stop(false);
+        return;
+      }
+      if (event.key === "Escape") {
+        event.preventDefault();
+        stop(false);
+        input.blur();
+        return;
+      }
       event.preventDefault();
       event.stopPropagation();
-      if (event.key === "Escape") return input.blur();
       if (["Control", "Shift", "Alt", "Meta"].includes(event.key)) return;
       pending = keyboardEventToAccelerator(event);
       input.innerHTML = keycaps(pending);
     });
     input.addEventListener("keyup", (event) => {
-      if (pending) {
+      if (recording && pending) {
         event.preventDefault();
+        stop(true);
         input.blur();
       }
     });
-    input.addEventListener("blur", save);
+    input.addEventListener("blur", () => stop(true));
+
+    render();
   });
 
   document.querySelectorAll<HTMLElement>("[data-hotkey-reset]").forEach((button) => {
     button.addEventListener("click", () => {
       const action = button.dataset.hotkeyReset as HotkeyAction;
       hotkeys[action] = DEFAULT_HOTKEYS[platform][action];
-      $(`[data-hotkey="${action}"]`).innerHTML = keycaps(hotkeys[action]);
+      const input = $(`[data-hotkey="${action}"]`);
+      input.innerHTML = keycaps(hotkeys[action]);
+      input.setAttribute("aria-label", hotkeyLabel(action));
       button.hidden = true;
     });
   });
